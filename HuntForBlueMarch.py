@@ -17,18 +17,18 @@ def main():
 def setSubmarine():
    global theSubmarine
 
-   xpos = numpy.random.randint(1,BOARDWIDTH)
-   ypos = numpy.random.randint(1, BOARDHEIGHT)
+   xpos = numpy.random.randint(0,BOARDWIDTH)
+   ypos = numpy.random.randint(0, BOARDHEIGHT)
    theSubmarine = [xpos, ypos]
    print(theSubmarine)
 
 def setVessel():
    global theVessel
 
-   xpos = numpy.random.randint(1,BOARDWIDTH)
-   ypos = numpy.random.randint(1, BOARDHEIGHT)
+   xpos = numpy.random.randint(0,BOARDWIDTH)
+   ypos = numpy.random.randint(0, BOARDHEIGHT)
    
-   if xpos == theSubmarine[0] & ypos == theSubmarine[1]:
+   if xpos == theSubmarine[0] and ypos == theSubmarine[1]:
       xpos = numpy.random.randint(1,BOARDWIDTH)
       ypos = numpy.random.randint(1, BOARDHEIGHT)
    
@@ -40,14 +40,23 @@ def initGame():
 
 
 def drawBoard():
-	for x in range(1, BOARDWIDTH):
-		for y in range(1, BOARDHEIGHT):
-			print("0")
-			if x == theVessel[0] & y == theVessel[1]:
-				print("V")
-			if x == theSubmarine[0] & y == theSubmarine[1]:
-				print("S")
-		print()
+	z = 0
+	for x in range(0, BOARDWIDTH):
+		print(z, end=' ')
+		z += 1
+		if z == 10:
+			z = 0
+			
+	print()
+	for x in range(0, BOARDWIDTH):
+		for y in range(0, BOARDHEIGHT):
+			if x == theVessel[0] and y == theVessel[1]:
+				print("V", end=' ');
+			elif x == theSubmarine[0] and y == theSubmarine[1]:
+				print("S", end=' ');
+			else:
+				print(".", end=' ');
+		print(" %d" % x)
 				
 
 

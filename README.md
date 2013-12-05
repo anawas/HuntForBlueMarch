@@ -1,4 +1,5 @@
 HuntForBlueMarch
 ================
 
-Small battle ships clone for practicing Python
+Small "Battle Ships" clone for practicing Python.
+

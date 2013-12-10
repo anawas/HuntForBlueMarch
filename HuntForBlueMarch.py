@@ -8,9 +8,8 @@ Copyright (c) 2013 __MyCompanyName__. All rights reserved.
 """
 
 import sys
-import helpSystem
-#import sysCheck
 import numpy
+import helpSystem
 
 BOARDWIDTH  = 20
 BOARDHEIGHT = 20
@@ -24,7 +23,10 @@ directHits = 2
 gameOver = False
 
 def main():
-	print("in main()")
+	"""
+	This is the main game loop. It reads the keyboard and calls
+	the connected actions.
+	"""
 	initGame()
 
 	key = 'a'
@@ -58,36 +60,48 @@ def main():
 	
 
 def setSubmarine():
-	"""Sets the initial position of the submarine
-	on the grid. """
+	"""
+	Sets the initial position of the submarine on the grid. 
+	"""
 	global theSubmarine
 
 	xpos = numpy.random.randint(0,BOARDWIDTH)
 	ypos = numpy.random.randint(0, BOARDHEIGHT)
 	theSubmarine = [xpos, ypos]
-	print(theSubmarine)
+	print("theSubmarine = %d, %d" % (theSubmarine[0], theSubmarine[1]))
 
 def setVessel():
-	"""Sets the initial position of the vessel
-	on the grid. """
+	"""
+	Sets the initial position of the vessel on the grid.
+	"""
 	
-   	global theVessel
+	global theVessel
 
 	xpos = numpy.random.randint(0,BOARDWIDTH)
 	ypos = numpy.random.randint(0, BOARDHEIGHT)
    
 	if xpos == theSubmarine[0] and ypos == theSubmarine[1]:
-		xpos = numpy.random.randint(1,BOARDWIDTH)
-		ypos = numpy.random.randint(1, BOARDHEIGHT)
+		xpos = numpy.random.randint(0,BOARDWIDTH)
+		ypos = numpy.random.randint(0, BOARDHEIGHT)
    
-		theVessel = [xpos, ypos]
+	theVessel = [xpos, ypos]
+
 
 def initGame():
+	"""
+	Initializes the game, i.e. sets the vessel and the
+	submarine randomly on the board.
+	"""
 	setSubmarine()
 	setVessel()
 
 
 def readSonar():
+	"""
+	Checks if a submarine is in the vincinity of the vessel.
+	The distance that the sonar can detect submarines is given by
+	the global constant SONARRADUIS.
+	"""
 	base_msg = "Sonar reports: "
 	
 	distance = calculateDistance()
@@ -98,9 +112,12 @@ def readSonar():
 
 
 def moveShip():
+	"""
+	Moves the vessel one grid cell. Possible directions are
+	N (up), S (down), E (right) and W (left).
+	"""
+
 	global theVessel
-	directions = ["N", "E", "S", "W"]
-	
 	direction_ok = False
 	
 	print("Direction (N,E,S,W): "),
@@ -108,27 +125,35 @@ def moveShip():
 		direction = raw_input()
 		
 		if direction.upper() == "N":
-			theVessel[1] = theVessel[1]-1;
+			theVessel[1] = theVessel[1]-1
 			direction_ok = True
 		elif direction.upper() == "S":
-			theVessel[1] = theVessel[1]+1;
+			theVessel[1] = theVessel[1]+1
 			direction_ok = True
 		elif direction.upper() == "E":
-			theVessel[0] = theVessel[0]+1;
+			theVessel[0] = theVessel[0]+1
 			direction_ok = True
 		elif direction.upper() == "W":
-			theVessel[0] = theVessel[0]-1;
+			theVessel[0] = theVessel[0]-1
 			direction_ok = True
 	
+	print("New position: %d, %d" % (theVessel[0], theVessel[1]))
+
+	
 def dropBomb():
-	global directHits
+	"""
+	Drops a water bomb and detects if the submarine was hit.
+	It takes 2 direct hints to sink the it. The bomb can hit a 
+	submarines within a range given by the global constant BOMBRADIUS.
+	"""
+	global directHits, gameOver
 	
 	print("Dropping bomb at %d, %d" % (theVessel[0], theVessel[1]))
 	distance = calculateDistance()
 	
 	if distance <= BOMBRADUIS:
 		print("Direct hit, sir!")
-		--directHits
+		directHits = directHits - 1
 	
 	if directHits == 0:
 		print("We sunk her, sir!")
@@ -136,8 +161,10 @@ def dropBomb():
 		 		
 
 def calculateDistance():
-	"""Calculates the Manhattan distance between the vessel and
-	the submarine. Returns this distance."""
+	"""
+	Calculates the Manhattan distance between the vessel and
+	the submarine. Returns this distance.
+	"""
 	
 	dx = theVessel[0] - theSubmarine[0]
 	if dx < 0:

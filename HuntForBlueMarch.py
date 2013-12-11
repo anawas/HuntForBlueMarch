@@ -33,21 +33,21 @@ def main():
 	while key != 'q' and gameOver == False:
 		print("Your orders, sir:"),
 		key = raw_input()
-		if key == 'm':
+		if key.lower().startswith('m'):
 			print("moving vessel")
-			moveShip()
+			moveShip(key)
 			print(theVessel)
-		elif key == 'd':
+		elif key.lower() == 'd':
 			dropBomb()
-		elif key == 's':
+		elif key.lower() == 's':
 			print("reading sonar")
 			readSonar()
-		elif key == 'a':
+		elif key.lower() == 'a':
 			print("!! ABANDON SHIP !!")
 			key = 'q'
-		elif key == 'h':
+		elif key.lower() == 'h':
 			helpSystem.short_help()
-		elif key == 'q':
+		elif key.lower() == 'q':
 			print("quit game")
 		else:
 			print("Sorry, sir, I don't understand!")
@@ -111,7 +111,7 @@ def readSonar():
 		print(base_msg + "nothing nearby, sir!")
 
 
-def moveShip():
+def moveShip(key):
 	"""
 	Moves the vessel one grid cell. Possible directions are
 	N (up), S (down), E (right) and W (left).
@@ -119,24 +119,37 @@ def moveShip():
 
 	global theVessel
 	direction_ok = False
+	valid_dirs = ["N", "E", "S", "W"]
 	
-	print("Direction (N,E,S,W): "),
-	while direction_ok == False:
-		direction = raw_input()
-		
-		if direction.upper() == "N":
+	d = key.split('m')
+	direction = d[1].strip(' ')
+	if direction.isalpha() == False:
+		print("Direction (N,E,S,W): "),
+		while direction_ok == False:
+			direction = raw_input()
+			if valid_dirs.__contains__(direction.upper()):
+				direction_ok = True
+			else:
+				print("Sorry sir, I don't understand!")
+				
+	print(direction)
+	if direction.upper() == "N":
+		if theVessel[1] > 0:
 			theVessel[1] = theVessel[1]-1
-			direction_ok = True
-		elif direction.upper() == "S":
+		direction_ok = True
+	elif direction.upper() == "S":
+		if theVessel[1] < BOARDHEIGHT:
 			theVessel[1] = theVessel[1]+1
-			direction_ok = True
-		elif direction.upper() == "E":
+		direction_ok = True
+	elif direction.upper() == "E":
+		if theVessel[0] < BOARDWIDTH:
 			theVessel[0] = theVessel[0]+1
-			direction_ok = True
-		elif direction.upper() == "W":
+		direction_ok = True
+	elif direction.upper() == "W":
+		if theVessel[0] > 0:
 			theVessel[0] = theVessel[0]-1
-			direction_ok = True
-	
+		direction_ok = True
+			
 	print("New position: %d, %d" % (theVessel[0], theVessel[1]))
 
 	

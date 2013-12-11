@@ -27,12 +27,13 @@ def main():
 	This is the main game loop. It reads the keyboard and calls
 	the connected actions.
 	"""
+	numOfMoves = 0
 	initGame()
 
 	key = 'a'
 	while key != 'q' and gameOver == False:
 		print("Your orders, sir:"),
-		key = raw_input()
+		key = input()
 		if key.lower().startswith('m'):
 			print("moving vessel")
 			moveShip(key)
@@ -51,12 +52,13 @@ def main():
 			print("quit game")
 		else:
 			print("Sorry, sir, I don't understand!")
+			if (numOfMoves > 0):
+				numOfMoves = numOfMoves - 1
+		numOfMoves = numOfMoves + 1
 	
 	if gameOver:
 		print("Congratulation, sir! You completed the mission successfully!")
-	
-	
-	# drawBoard()
+		print("It took you " + numOfMoves.__str__() + " moves.")
 	
 
 def setSubmarine():
@@ -109,8 +111,30 @@ def readSonar():
 		print(base_msg + "submarine detected, sir!")
 	else:
 		print(base_msg + "nothing nearby, sir!")
+	drawSonarMap()
+	
 
-
+def drawSonarMap():
+	xmin = theVessel[0] - SONARRADIUS
+	xmax = theVessel[0] + SONARRADIUS
+	ymin = theVessel[1] - SONARRADIUS
+	ymax = theVessel[1] + SONARRADIUS
+	
+	for y in range(ymin, ymax+1):
+		for x in range(xmin, xmax+1):
+			if x == theVessel[0] and y == theVessel[1]:
+				print("X", end=' ')
+			elif x == theSubmarine[0] and y == theSubmarine[1]:
+				print("S", end=' ')
+			elif x == 0 or x == BOARDWIDTH:
+				print("|", end = ' ')
+			elif y == 0 or y == BOARDHEIGHT:
+				print("_", end = ' ')
+			else:
+				print(".", end=' ')
+		print()
+		
+	
 def moveShip(key):
 	"""
 	Moves the vessel one grid cell. Possible directions are
@@ -126,7 +150,7 @@ def moveShip(key):
 	if direction.isalpha() == False:
 		print("Direction (N,E,S,W): "),
 		while direction_ok == False:
-			direction = raw_input()
+			direction = input()
 			if valid_dirs.__contains__(direction.upper()):
 				direction_ok = True
 			else:
